@@ -146,7 +146,12 @@ public class Calculator {
             @Override
             public void onClick(View v) {
                 historyView.setText(nums);
-                numdisplay.setText(Float.toString(calculate(nums)));
+                float result = calculate(nums);
+                if (result % 1 == 0) {
+                    numdisplay.setText(String.valueOf((int) result));
+                } else {
+                    numdisplay.setText(String.valueOf(result));
+                }
                 nums="";
             }
         });
@@ -188,9 +193,61 @@ public class Calculator {
     }
     public float calculate(String numbers){
         numbers = numbers.replaceAll(" ", "");
-        float finalnum=0,temp1=0,temp2=0;
-        String tempS1 ="",tempS2 ="";
-        int j;
+        float finalnum=0,temp1=0,temp2=0,finalkefel=0;
+        String tempS1 ="",tempS2 ="", str="",str2="";
+
+        int j,start=0,end=0;
+
+
+        for (int h = 0; h < numbers.length(); h++) {
+
+            char b = numbers.charAt(h);
+            if(Character.isDigit(b)){
+                str+=b;
+            }
+            //System.out.println("numbers :" + numbers + " after kefel " + finalkefel + " str1 : " + " str2 : "+str2 );
+            if(b=='+'|| b=='-'){
+                str = "";
+                start = h+1;
+            }
+            if(b=='×'){
+
+                h++;
+                while(Character.isDigit(numbers.charAt(h))&&h<numbers.length()){
+                    b = numbers.charAt(h);
+                    h++;
+                    str2+=b;
+                }
+                end =h-1;
+                System.out.println("numbers :" + numbers + " after kefel " + finalkefel + " str1 : "+ str + " str2 : "+str2 );
+                finalkefel = Float.parseFloat(str) * Float.parseFloat(str2);
+                if(finalkefel%1==0){
+                    numbers= numbers.substring(0, start) + (int) finalkefel + numbers.substring(end +1);
+                }else {
+                    numbers= numbers.substring(0, start) + finalkefel + numbers.substring(end +1);
+                }
+
+
+                h=0;
+                System.out.println("numbers :" + numbers + " after kefel " + finalkefel);
+            }
+            if(b=='÷'){
+
+                h++;
+                b = numbers.charAt(h);
+                while(Character.isDigit(b)&&h<numbers.length()){
+                    b = numbers.charAt(h);
+                    h++;
+                    str2+=b;
+                }
+                end =h;
+                finalkefel = Float.parseFloat(str) / Float.parseFloat(str2);
+                numbers= numbers.substring(0, start) + finalkefel + numbers.substring(end + 1);
+                numbers+="" + finalkefel;
+                System.out.println("numbers :" + numbers + " after kefel " + finalkefel);
+            }
+        }
+
         for (int i = 0; i < numbers.length(); i++) {
             char c = numbers.charAt(i);
             tempS2="";
@@ -224,36 +281,6 @@ public class Calculator {
                         finalnum= finalnum-temp2;
                     }
                     i =j-1;
-                } else if (c == '×') {
-                    j=i+1;
-                    while (j < numbers.length() && Character.isDigit(numbers.charAt(j))) {
-                        tempS2+= numbers.charAt(j);
-                        j++;
-                    }
-                    temp2=Float.parseFloat(tempS2);
-                    if(finalnum==0.0){
-                        finalnum= temp1 * temp2;
-                    }else{
-                        finalnum= finalnum*temp2;
-                    }
-                    i =j-1;
-                }else if (c == '÷') {
-                    j=i+1;
-                    while (j < numbers.length() && Character.isDigit(numbers.charAt(j))) {
-                        tempS2+= numbers.charAt(j);
-                        j++;
-                    }
-                    temp2=Float.parseFloat(tempS2);
-                    if(temp1==0){
-                        return 0;
-                    }
-                    if(finalnum==0){
-                        finalnum= temp1 / temp2;
-                    }else{
-                        finalnum= finalnum/temp2;
-                    }
-
-                    i =j -1;
                 }
                 System.out.println("finished loop " + i + " done the function " + numbers.charAt(i) + "the final num is " + finalnum  );
                 System.out.println("_______________________________");
