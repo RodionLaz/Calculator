@@ -120,8 +120,16 @@ public class Calculator {
             @Override
             public void onClick(View v) {
                 if(nums.length()>=1){
-                    nums = nums.substring(0,nums.length() -1);
-                    numdisplay.setText(nums);
+                    if(nums.charAt(nums.length()-1) == ' ') {
+                        nums = nums.substring(0, nums.length() - 1);
+                    }
+                        if(!Character.isDigit(nums.charAt(nums.length()-1))) {
+                            lastcharisop = false;
+                        }else{
+                            lastcharisop = true;
+                        }
+                        nums = nums.substring(0,nums.length() -1);
+                        numdisplay.setText(nums);
                 }
             }
         });
@@ -212,7 +220,7 @@ public class Calculator {
         String num2str="";
         float[] finalAndLoc = new float[2];
 
-        while (h < numbers.length() && Character.isDigit(numbers.charAt(h))) {
+        while (h < numbers.length() && (Character.isDigit(numbers.charAt(h)) || numbers.charAt(h) == '.')){
             num2str += numbers.charAt(h);
             h++;
         }
@@ -242,6 +250,7 @@ public class Calculator {
     }
 
     public float calculate(String numbers){
+        System.out.println(5.2*3);
         numbers = numbers.replaceAll(" ", "");
         float num1;
         String  str="",str2="";
@@ -250,7 +259,7 @@ public class Calculator {
         int h = 0;
         while (h < numbers.length()) {
             char b = numbers.charAt(h);
-            if(Character.isDigit(b)) {
+            if(Character.isDigit(b)|| b =='.') {
                 str += b;
             }
             if (b == '+' || b == '-') {
@@ -261,11 +270,7 @@ public class Calculator {
                 num1 = Float.parseFloat(str);
                 finalAndLoc = calculateHelper(h, b, numbers, num1);
                 end = (int) finalAndLoc[1];
-                if (finalAndLoc[0] % 1 == 0) {
-                    numbers = numbers.substring(0, start) + (int) finalAndLoc[0] + numbers.substring(end + 1);
-                } else {
-                    numbers = numbers.substring(0, start) + finalAndLoc[0] + numbers.substring(end + 1);
-                }
+                numbers = numbers.substring(0, start) + finalAndLoc[0] + numbers.substring(end + 1);
                 h = 0;
                 str = "";
             }else{
@@ -284,11 +289,7 @@ public class Calculator {
                     }
                     finalAndLoc = calculateHelper(i, c, numbers, Float.parseFloat(str2));
                     end = (int) finalAndLoc[1];
-                    if (finalAndLoc[0] % 1 == 0) {
-                        numbers= numbers.substring(0, start) + (int) finalAndLoc[0] + numbers.substring(end +1);
-                    } else {
-                        numbers= numbers.substring(0, start) + finalAndLoc[0] + numbers.substring(end +1);
-                    }
+                    numbers= numbers.substring(0, start) + finalAndLoc[0] + numbers.substring(end +1);
                     i = 0;
                     str2 = "";
                 }
