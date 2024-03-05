@@ -173,13 +173,19 @@ public class Calculator {
             @Override
             public void onClick(View v) {
                 historyView.setText(nums);
-                float result = calculate(nums);
-                if (result % 1 == 0) {
-                    numdisplay.setText(String.valueOf((int) result));
-                } else {
-                    numdisplay.setText(String.valueOf(result));
-                }
-                nums="";
+                try{
+                    float result = calculate(nums);
+                    if (result % 1 == 0) {
+                        numdisplay.setText(String.valueOf((int) result));
+                    } else {
+                        numdisplay.setText(String.valueOf(result));
+                    }
+                    nums="";
+                }catch(Exception e){
+                    System.out.println(e);
+                    numdisplay.setText("ERORR");
+                    nums="";
+            }
             }
         });
         btnAC.setOnClickListener(new View.OnClickListener() {
@@ -207,14 +213,15 @@ public class Calculator {
         btnDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(lastcharisop){return;}
                 nums+=".";
+                lastcharisop = true;
                 numdisplay.setText(nums);
             }
         });
     }
 
     public float[] calculateHelper(int charloc,char op,String numbers,float num1){
-        char b=' ';
         int h=charloc+1;
         float num2;
         String num2str="";
@@ -248,10 +255,39 @@ public class Calculator {
         }
         return finalAndLoc;
     }
+    public float[] sograim(String numbers){
+        int i =0,start,end;
+        float[] reslut = new float[3];
+        String newString ="";
+
+        while(i<numbers.length()){
+            char c = numbers.charAt(i);
+            if(c =='('){
+                i++;
+                start =i;
+                while(!(c==')') && i < numbers.length()){
+                    c = numbers.charAt(i);
+                    newString +=c;
+                    i++;
+                }
+                end=i;
+                reslut[0] = calculate(newString);
+                reslut[1] = start;
+                reslut[2] = end;
+            }
+            i++;
+        }
+        return reslut;
+    }
 
     public float calculate(String numbers){
+
         System.out.println(5.2*3);
         numbers = numbers.replaceAll(" ", "");
+       // float[] results = sograim(numbers);
+       // if (Float.toString(results[0]) != ""){
+       //     numbers = numbers.substring(0, (int) results[1]) + results[0] + numbers.substring((int) results[2] + 1);
+        //}
         float num1;
         String  str="",str2="";
         float[] finalAndLoc;
@@ -298,6 +334,7 @@ public class Calculator {
                 i++;
             }
         }
+
+
         return Float.parseFloat(numbers);
-    }
-}
+}}
