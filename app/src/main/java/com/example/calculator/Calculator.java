@@ -123,11 +123,7 @@ public class Calculator {
                     if(nums.charAt(nums.length()-1) == ' ') {
                         nums = nums.substring(0, nums.length() - 1);
                     }
-                        if(!Character.isDigit(nums.charAt(nums.length()-1))) {
-                            lastcharisop = false;
-                        }else{
-                            lastcharisop = true;
-                        }
+                    lastcharisop = Character.isDigit(nums.charAt(nums.length() - 1));
                         nums = nums.substring(0,nums.length() -1);
                         numdisplay.setText(nums);
                 }
@@ -185,9 +181,7 @@ public class Calculator {
                     System.out.println(e);
                     numdisplay.setText("ERORR");
                     nums="";
-            }
-            }
-        });
+            }}});
         btnAC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,39 +249,79 @@ public class Calculator {
         }
         return finalAndLoc;
     }
-    public float[] sograim(String numbers){
-        int i =0,start,end;
-        float[] reslut = new float[3];
-        String newString ="";
-
+    //no sograim == false
+    public boolean checksograim(String numbers){
+        int i =0;
         while(i<numbers.length()){
-            char c = numbers.charAt(i);
-            if(c =='('){
-                i++;
-                start =i;
-                while(!(c==')') && i < numbers.length()){
-                    c = numbers.charAt(i);
-                    newString +=c;
-                    i++;
-                }
-                end=i;
-                reslut[0] = calculate(newString);
-                reslut[1] = start;
-                reslut[2] = end;
+            char cc = numbers.charAt(i);
+            if(cc == '('){
+                return true;
             }
             i++;
         }
-        return reslut;
+        return false;
+    }
+    public String sograim(String numbers){
+        int i =0,start,end,sograimcounterstart=0,sograimcounterend=0;
+        float[] reslut = new float[4];
+        String newString ="";
+        boolean flag =true;
+        while(i<numbers.length()){
+            char cc = numbers.charAt(i);
+            if(cc == '('){
+                sograimcounterstart++;
+            }
+            if(cc==')'){
+                sograimcounterend++;
+            }
+            i++;
+        }
+        if(sograimcounterstart !=sograimcounterend){
+            reslut[0] =0;
+            reslut[1] =0;
+            reslut[2] =0;
+            // reslut[3] = 0 mean finished incorectly
+            reslut[3] = 0;
+            return "Error";
+        }
+        i=0;
+        while(flag){
+            char c = numbers.charAt(i);
+            if(c =='('){
+                start =i;
+                i++;
+                c = numbers.charAt(i);
+                while(!(c==')') && i < numbers.length()){
+                    if(c=='('){
+                        start =i;
+                        newString="";
+                    }else{
+                        newString +=c;
+                    }
+                    i++;
+                    c = numbers.charAt(i);
+                }
+                end=i;
+                //reslut[0] = calculate(newString);
+                numbers = numbers.substring(0, (int) start) + calculate(newString) + numbers.substring((int) end + 1);
+                reslut[1] = start;
+                reslut[2] = end;
+                // reslut[3] = 1 mean finished correctly
+                reslut[3] = 1;
+            }
+            flag = checksograim(numbers);
+            i++;
+        }
+        return numbers;
     }
 
     public float calculate(String numbers){
-
-        System.out.println(5.2*3);
         numbers = numbers.replaceAll(" ", "");
-       // float[] results = sograim(numbers);
-       // if (Float.toString(results[0]) != ""){
-       //     numbers = numbers.substring(0, (int) results[1]) + results[0] + numbers.substring((int) results[2] + 1);
-        //}
+
+        if (checksograim(numbers)) {
+            numbers = sograim(numbers);
+           // numbers = numbers.substring(0, (int) results[1]) + results[0] + numbers.substring((int) results[2] + 1);
+        }
         float num1;
         String  str="",str2="";
         float[] finalAndLoc;
@@ -334,7 +368,6 @@ public class Calculator {
                 i++;
             }
         }
-
-
         return Float.parseFloat(numbers);
-}}
+    }
+}
