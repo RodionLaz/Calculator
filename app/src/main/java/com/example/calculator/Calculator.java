@@ -178,7 +178,7 @@ public class Calculator {
                     }
                     nums="";
                 }catch(Exception e){
-                    System.out.println(e);
+                    System.out.println(e.getCause());
                     numdisplay.setText("ERORR");
                     nums="";
             }}});
@@ -249,7 +249,9 @@ public class Calculator {
         }
         return finalAndLoc;
     }
-    //no sograim == false
+    public static int divideByZero() {
+        return 1 / 0;
+    }
     public boolean checksograim(String numbers){
         int i =0;
         while(i<numbers.length()){
@@ -277,12 +279,7 @@ public class Calculator {
             i++;
         }
         if(sograimcounterstart !=sograimcounterend){
-            reslut[0] =0;
-            reslut[1] =0;
-            reslut[2] =0;
-            // reslut[3] = 0 mean finished incorectly
-            reslut[3] = 0;
-            return "Error";
+            divideByZero();
         }
         i=0;
         while(flag){
@@ -302,12 +299,7 @@ public class Calculator {
                     c = numbers.charAt(i);
                 }
                 end=i;
-                //reslut[0] = calculate(newString);
                 numbers = numbers.substring(0, (int) start) + calculate(newString) + numbers.substring((int) end + 1);
-                reslut[1] = start;
-                reslut[2] = end;
-                // reslut[3] = 1 mean finished correctly
-                reslut[3] = 1;
             }
             flag = checksograim(numbers);
             i++;
